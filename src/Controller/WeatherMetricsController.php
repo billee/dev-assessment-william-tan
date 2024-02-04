@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\Http\Client;
+
+
 /**
  * WeatherMetrics Controller
  *
@@ -15,11 +18,34 @@ class WeatherMetricsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function index()
+    public function display(string $temp_f)
     {
-        $weatherMetrics = $this->paginate($this->WeatherMetrics);
+        $apiKey = '4d54ef682dfb4f5f9d0205732240302';
+        $cityName = 'New York';
 
-        $this->set(compact('weatherMetrics'));
+        $url = "https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$cityName";
+        $client = new Client();
+        $response = $client->get($url);
+
+        $jsonResponse = $response->getBody()->getContents();
+        $weatherData = json_decode($jsonResponse, true);
+
+        $temperatureCelsius = $weatherData['current']['temp_c'];
+        $conditionText = $weatherData['current']['condition']['text'];
+
+        $this->set('temperatureCelsius', $temperatureCelsius);
+        $this->set('conditionText', $conditionText);
+
+
+
+
+
+
+        //die($temp_f);
+
+        // $weatherMetrics = $this->paginate($this->WeatherMetrics);
+
+        // $this->set(compact('weatherMetrics'));
     }
 
     /**
