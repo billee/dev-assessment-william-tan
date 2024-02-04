@@ -2,3 +2,7 @@
 <p>Temperature: <?= $temperatureCelsius ?>°C</p>
 <p>Time: <?= $temperatureTime ?></p>
 <p>Condition: <?= $conditionText ?></p>
+
+<pre>
+<?= print_r($data) ?>
+</pre>

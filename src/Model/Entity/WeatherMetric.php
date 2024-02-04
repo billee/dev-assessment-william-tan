@@ -27,5 +27,6 @@ class WeatherMetric extends Entity
         'name' => true,
         'country' => true,
         'temp_f' => true,
+        'last_updated' => true,
     ];
 }

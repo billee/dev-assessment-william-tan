@@ -46,7 +46,7 @@ class WeatherMetricsController extends AppController
         $this->set('temperatureCelsius', $temperatureCelsius);
         $this->set('temperatureTime', $temperatureTime);
         $this->set('conditionText', $conditionText);
-        $this->set('data', $weatherData);
+        $this->set('data', $weatherData['content']);
 
     }
 
