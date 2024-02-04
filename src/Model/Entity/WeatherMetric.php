@@ -26,5 +26,6 @@ class WeatherMetric extends Entity
     protected $_accessible = [
         'name' => true,
         'country' => true,
+        'temp_f' => true,
     ];
 }

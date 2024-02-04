@@ -21,6 +21,10 @@ class WeatherMetricsController extends AppController
     public function display(string $temp_f)
     {
         $apiKey = '4d54ef682dfb4f5f9d0205732240302';
+        // echo (env('WEATHER_API_KEY'));
+        //$apiKey = getenv('WEATHER_API_KEY');
+        //print_r($_ENV);
+
         $cityName = 'New York';
 
         $url = "https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$cityName";
@@ -30,22 +34,13 @@ class WeatherMetricsController extends AppController
         $jsonResponse = $response->getBody()->getContents();
         $weatherData = json_decode($jsonResponse, true);
 
+
         $temperatureCelsius = $weatherData['current']['temp_c'];
         $conditionText = $weatherData['current']['condition']['text'];
 
         $this->set('temperatureCelsius', $temperatureCelsius);
         $this->set('conditionText', $conditionText);
 
-
-
-
-
-
-        //die($temp_f);
-
-        // $weatherMetrics = $this->paginate($this->WeatherMetrics);
-
-        // $this->set(compact('weatherMetrics'));
     }
 
     /**
