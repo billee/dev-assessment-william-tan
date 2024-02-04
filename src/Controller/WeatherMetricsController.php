@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Cake\Http\Client;
+use App\Service\Weather\WeatherApiService;
 
 
 /**
@@ -20,26 +21,32 @@ class WeatherMetricsController extends AppController
      */
     public function display(string $temp_f)
     {
-        $apiKey = '4d54ef682dfb4f5f9d0205732240302';
-        // echo (env('WEATHER_API_KEY'));
-        //$apiKey = getenv('WEATHER_API_KEY');
-        //print_r($_ENV);
+        // $apiKey = '4d54ef682dfb4f5f9d0205732240302';
+        // //echo (env('WEATHER_API_KEY'));
+        // //$apiKey = getenv('WEATHER_API_KEY');
+        // //print_r($_ENV);
+
+        // $cityName = 'New York';
+
+        // $url = "https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$cityName";
+        // $client = new Client();
+        // $response = $client->get($url);
+
+        // $jsonResponse = $response->getBody()->getContents();
+        // $weatherData = json_decode($jsonResponse, true);
 
         $cityName = 'New York';
+        $weatherApiService = new WeatherApiService();
+        $weatherData = $weatherApiService->getCityWeather($cityName);
 
-        $url = "https://api.weatherapi.com/v1/current.json?key=$apiKey&q=$cityName";
-        $client = new Client();
-        $response = $client->get($url);
-
-        $jsonResponse = $response->getBody()->getContents();
-        $weatherData = json_decode($jsonResponse, true);
-
-
-        $temperatureCelsius = $weatherData['current']['temp_c'];
-        $conditionText = $weatherData['current']['condition']['text'];
+        $temperatureCelsius = $weatherData['content']['current']['temp_f'];
+        $temperatureTime = $weatherData['content']['current']['last_updated'];
+        $conditionText = $weatherData['content']['current']['condition']['text'];
 
         $this->set('temperatureCelsius', $temperatureCelsius);
+        $this->set('temperatureTime', $temperatureTime);
         $this->set('conditionText', $conditionText);
+        $this->set('data', $weatherData);
 
     }
 
