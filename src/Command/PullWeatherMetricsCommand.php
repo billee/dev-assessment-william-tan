@@ -1,7 +1,6 @@
 <?php
 namespace App\Command;
 
-use Cake\Http\Client;
 use Cake\Command\Command;
 use Cake\Console\Arguments;
 use Cake\Console\ConsoleIo;
@@ -35,7 +34,7 @@ class PullWeatherMetricsCommand extends Command
             $this->WeatherMetrics = $this->fetchTable('WeatherMetrics');
 
             $flatData = array_merge($weatherData['location'], $weatherData['current']);
-            $io->out(print_r($flatData, true));
+            //$io->out(print_r($flatData, true));
 
             $weatherEntity = $this->WeatherMetrics->newEntity($flatData);
 

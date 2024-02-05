@@ -1,82 +1,19 @@
 <?php
-declare(strict_types=1);
 
-namespace App\Test\TestCase\Controller;
-
-use App\Controller\WeatherMetricsController;
-use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
+use App\Controller\WeatherMetricsController;
 
-/**
- * App\Controller\WeatherMetricsController Test Case
- *
- * @uses \App\Controller\WeatherMetricsController
- */
 class WeatherMetricsControllerTest extends TestCase
 {
-    use IntegrationTestTrait;
-
-    /**
-     * Fixtures
-     *
-     * @var array<string>
-     */
-    protected $fixtures = [
-        'app.WeatherMetrics',
-    ];
-
-    /**
-     * Test index method
-     *
-     * @return void
-     * @uses \App\Controller\WeatherMetricsController::index()
-     */
-    public function testIndex(): void
+    public function testDisplay()
     {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
+        $controller = new WeatherMetricsController();
 
-    /**
-     * Test view method
-     *
-     * @return void
-     * @uses \App\Controller\WeatherMetricsController::view()
-     */
-    public function testView(): void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test add method
-     *
-     * @return void
-     * @uses \App\Controller\WeatherMetricsController::add()
-     */
-    public function testAdd(): void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test edit method
-     *
-     * @return void
-     * @uses \App\Controller\WeatherMetricsController::edit()
-     */
-    public function testEdit(): void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
-    }
-
-    /**
-     * Test delete method
-     *
-     * @return void
-     * @uses \App\Controller\WeatherMetricsController::delete()
-     */
-    public function testDelete(): void
-    {
-        $this->markTestIncomplete('Not implemented yet.');
+        $this->assertNull($controller->display());
     }
 }
+
+
+// this is the error in testing
+//1) WeatherMetricsControllerTest::testDisplay
+//Cake\Database\Exception\DatabaseException: Cannot describe weather_metrics. It has 0 columns.

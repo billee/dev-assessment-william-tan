@@ -92,7 +92,7 @@ return [
     ],
 
     /*
-     * Configure the cache adapters.
+     * Configure the cache adapters
      */
     'Cache' => [
         'default' => [
@@ -339,7 +339,9 @@ return [
          */
         'test' => [
             'className' => Connection::class,
-            'driver' => Mysql::class,
+            //'driver' => Mysql::class,
+            'driver' => 'Cake\Database\Driver\Sqlite',
+            'database' => ':memory:',
             'persistent' => false,
             'timezone' => 'UTC',
             //'encoding' => 'utf8mb4',

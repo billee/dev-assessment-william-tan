@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Cake\Http\Client;
+use Cake\I18n\Time;
 use Cake\ORM\TableRegistry;
-use App\Service\Weather\WeatherApiService;
+use Cake\I18n\FrozenTime;
 
 
 /**
@@ -20,94 +20,38 @@ class WeatherMetricsController extends AppController
      *
      * @return \Cake\Http\Response|null|void Renders view
      */
-    public function display(string $temp_f)
+    public function display()
     {
+        $params = $this->request->getParam('pass');
+        $endParamName = end($params);
+
         $this->weatherMetrics = TableRegistry::getTableLocator()->get('WeatherMetrics');
 
-        $weatherMetrics = $this->weatherMetrics->find('all');
+        $retrievedMetrics = $this->weatherMetrics
+                    ->find('all')
+                    ->where(['name' => 'New York', 'country' => 'USA'])  // this is being assumed (hard_coded)
+                    //->limit(200)
+                    ->toArray();
 
+        $groups = array_chunk($retrievedMetrics, 20);
 
-        $this->set('weatherMetrics', $this->paginate($weatherMetrics, ['limit' => 10]));
-
-    }
-
-    /**
-     * View method
-     *
-     * @param string|null $id Weather Metric id.
-     * @return \Cake\Http\Response|null|void Renders view
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function view($id = null)
-    {
-        $weatherMetric = $this->WeatherMetrics->get($id, [
-            'contain' => [],
-        ]);
-
-        $this->set(compact('weatherMetric'));
-    }
-
-    /**
-     * Add method
-     *
-     * @return \Cake\Http\Response|null|void Redirects on successful add, renders view otherwise.
-     */
-    public function add()
-    {
-        $weatherMetric = $this->WeatherMetrics->newEmptyEntity();
-        if ($this->request->is('post')) {
-            $weatherMetric = $this->WeatherMetrics->patchEntity($weatherMetric, $this->request->getData());
-            if ($this->WeatherMetrics->save($weatherMetric)) {
-                $this->Flash->success(__('The weather metric has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
+        $weatherMetrics = [];
+        foreach ($groups as $group) {
+            $totalTemp = 0;
+            foreach ($group as $record) {
+                $totalTemp += $record[$endParamName];
             }
-            $this->Flash->error(__('The weather metric could not be saved. Please, try again.'));
-        }
-        $this->set(compact('weatherMetric'));
-    }
 
-    /**
-     * Edit method
-     *
-     * @param string|null $id Weather Metric id.
-     * @return \Cake\Http\Response|null|void Redirects on successful edit, renders view otherwise.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function edit($id = null)
-    {
-        $weatherMetric = $this->WeatherMetrics->get($id, [
-            'contain' => [],
-        ]);
-        if ($this->request->is(['patch', 'post', 'put'])) {
-            $weatherMetric = $this->WeatherMetrics->patchEntity($weatherMetric, $this->request->getData());
-            if ($this->WeatherMetrics->save($weatherMetric)) {
-                $this->Flash->success(__('The weather metric has been saved.'));
-
-                return $this->redirect(['action' => 'index']);
-            }
-            $this->Flash->error(__('The weather metric could not be saved. Please, try again.'));
-        }
-        $this->set(compact('weatherMetric'));
-    }
-
-    /**
-     * Delete method
-     *
-     * @param string|null $id Weather Metric id.
-     * @return \Cake\Http\Response|null|void Redirects to index.
-     * @throws \Cake\Datasource\Exception\RecordNotFoundException When record not found.
-     */
-    public function delete($id = null)
-    {
-        $this->request->allowMethod(['post', 'delete']);
-        $weatherMetric = $this->WeatherMetrics->get($id);
-        if ($this->WeatherMetrics->delete($weatherMetric)) {
-            $this->Flash->success(__('The weather metric has been deleted.'));
-        } else {
-            $this->Flash->error(__('The weather metric could not be deleted. Please, try again.'));
+            $weatherMetrics[] = [
+                'name'=> $record['name'],
+                'country' => $record['country'],
+                'date_time' => FrozenTime::createFromTimestamp($record['last_updated']),
+                'temp_average' => $totalTemp / count($group)
+            ];
         }
 
-        return $this->redirect(['action' => 'index']);
+        //$this->set('weatherMetrics', $this->paginate($weatherMetrics, ['limit' => 10]));
+        $this->set(compact('weatherMetrics'));
+
     }
 }
